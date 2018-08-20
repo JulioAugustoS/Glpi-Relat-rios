@@ -1,0 +1,135 @@
+body {
+	width: 100%;
+	background: #e1e1e1 !important;
+}
+
+.backtab {
+	background: #636e72 !important;
+	color: #FFF;
+}
+
+.fleft {
+	float: left;
+}
+
+div.dataTables_wrapper div.dataTables_processing {
+	top: 20% !important;
+	left: 45% !important;
+	width: 400px !important;
+	height: 150px !important;
+	z-index: 2 !important;
+	font-size: 35px !important;
+}
+
+#container {
+	background: #FFF;
+	margin: auto;
+	width: 75%;
+	border: 1px solid #DDD;
+	padding: 20px;
+}
+
+.bar-topo {
+	width: 100%;
+	height: 60px;
+	background: #e74c3c;
+	margin-bottom: 50px;
+	box-shadow: 2px 1px 1px #CCC;
+}
+
+.logo {
+	width: 250px;
+	height: 60px;
+	padding: 2px;
+	float: left;
+}
+
+.padd-padrao {
+	padding-left: 5px !important;
+	padding-right: 5px !important;
+}
+
+.logo img {
+	width: 100%;
+	height: 100%;
+}
+
+.fright {
+	float: right;
+}
+
+.menu {
+	margin-top: 12px;
+}
+
+.branco {
+	color: #FFF !important;
+	text-decoration: none !important;
+}
+/*
+.nav-pills a {
+	color: #333 !important;
+}
+
+.nav-pills a:hover {
+	color: #000 !important;
+}
+
+.nav-pills > li.active > a {
+	color: #000 !important;
+	background-color: transparent !important;
+}
+
+.nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
+	background-color: transparent !important;
+}
+
+.nav > li > a:hover {
+	background-color: transparent !important;
+}
+
+.dropdown-menu {
+	padding: 10px !important;
+}
+*/
+.color-black {
+	color: #000 !important;
+}
+
+.bottom-input {
+	margin-bottom: 10px !important;
+}
+
+.sp-1 {
+	margin-left: 10px !important;
+}
+
+.none {
+	display: none !important;
+}
+
+.ui-state-default {
+	height: 34px !important;
+	background: #FFF !important;
+	padding: 6px 12px !important;
+	font-size: 14px !important;
+	display: inline-block !important;
+	width: auto !important;
+	vertical-align: middle !important;
+}
+
+.ui-button {
+	height: 34px !important;
+}
+
+.ui-widget {
+	width: auto !important;
+	display: inline-block !important;
+	vertical-align: middle !important;
+}
+
+@media screen and (max-width: 1440px) {
+	#container {
+		width: 95%;
+	}
+}
