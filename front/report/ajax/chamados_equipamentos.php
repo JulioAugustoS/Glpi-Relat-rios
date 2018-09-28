@@ -1,7 +1,6 @@
 <?php
 
 include('../../../../../inc/includes.php');
-include('../../../../../config/config.php');
 include('../../includes/config.php');
 include('../../api/functions.php');
 
@@ -81,8 +80,6 @@ $dataFinal = $ano . "-12-31";
     $slaTime = ($listChamados['avgtime'] / $listChamados['total']);
 
     if($listChamados['total'] != 0):
-
-
 
       if($listChamados['QtdJan'] < 1): $jan = ''; else: $jan = $listChamados['QtdJan']; endif;
       if($listChamados['QtdFev'] < 1): $fev = ''; else: $fev = $listChamados['QtdFev']; endif;

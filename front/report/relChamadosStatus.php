@@ -1,6 +1,5 @@
 <?php
 include('../../../../inc/includes.php');
-include('../../../../config/config.php');
 include('../includes/config.php');
 include('../api/functions_all.php');
 include('../api/functions.php');
@@ -48,7 +47,8 @@ include('../api/functions.php');
 											ORDER BY name ASC
 											";
 									$lnCategories = $DB->query($sqlCategories) or die('Error');
-
+									
+									echo '<option value="50">Sap - Todos</option>';
 									while($resultCategories = $DB->fetch_assoc($lnCategories)):
 										echo '<option value="'.$resultCategories['id'].'">'.$resultCategories['name'].'</option>';
 									endwhile;
@@ -59,7 +59,7 @@ include('../api/functions.php');
 							<label>Status</label>
 							<select name="status" class="form-control" id="status">
 								<option value="tudo">Processando e Pendentes</option>
-								<option value="2">Processando Atribuido</option>
+								<option value="2">Processando</option>
 								<option value="4">Pendente</option>
 								<option value="6">Fechado</option>
 							</select>

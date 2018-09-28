@@ -40,7 +40,7 @@ function plugin_version_relatorios() {
 
 	return array(
 		'name'				=> __('Relatórios', 'relatórios'),
-		'version'			=> '0.1.2',
+		'version'			=> '0.1.3',
 		'author'			=> '<a href="mailto:julio@beautyhall.com.br">Julio Augusto</a>',
 		'license'			=> 'GLPv2+',
 		'homepage'			=> 'http://glpi-relatorios.sourceforge.net',

@@ -8,6 +8,10 @@ var logoMarron =
 var now = new Date();
 var jsDate = now.getDate()+'/'+(now.getMonth()+1)+'/'+now.getFullYear()+' às '+now.getHours()+':'+now.getMinutes();
 
+function convertDate(date){	
+	return date.split('-').reverse().join('/');
+}
+
 /********** FUNÇÕES *************/
 
 // Gerar Relatorios por Status
@@ -34,7 +38,7 @@ function gerarRelChamadosPendentes() {
       break;
   }
 
-  if(categoria == 9){categoriaString = 'Suporte Técnico'}
+  if(categoria == 9){categoriaString  = 'Suporte Técnico'}
   if(categoria == 11){categoriaString = 'Bilhetagem Eletrônica'}
   if(categoria == 12){categoriaString = 'Desenvolvimento'}
   if(categoria == 13){categoriaString = 'Compras'}
@@ -674,7 +678,7 @@ function gerarRelChamadosSapAnual() {
       language: {
           "sProcessing":   "Carregando..."
       },
-      aaSorting: [[ 0, "asc" ]],
+      aaSorting: [[ 13, "desc" ]],
       footerCallback: function ( row, data, start, end, display ) {
         var api = this.api()
 
@@ -794,6 +798,212 @@ function gerarRelChamadosSapAnual() {
       }
   });
 }
+
+// Gerar Relatório Sintético de Chamados SAP
+function gerarRelChamadosSapStatus() {
+
+  var dataInicio = $('#dataInicial').val()
+  var dataFinal = $('#dataFinal').val()
+
+  if(dataInicio == ''){
+    $('#dataInicial').focus()
+  }else if(dataFinal == ''){
+    $('#dataFinal').focus()
+  }else{
+
+    periodoString = 'Periodo: ' + convertDate(dataInicio) + ' à ' + convertDate(dataFinal)
+
+    $('#tabelaChamadosSapStatus').append("<tfoot style='display:none;'><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr></tfoot>")
+    var table = $("#tabelaChamadosSapStatus").dataTable({
+      bProcessing: true,
+      serverSide: false,
+      destroy: true,
+      sAjaxSource: "ajax/chamados_sap_status.php?dataInicial="+dataInicio+"&dataFinal="+dataFinal,
+      dom:
+        'Bfrtip',
+        lengthMenu: [
+            [ 25, 50, 100 -1 ],
+            [ '25 linhas', '50 linhas', '100 linhas', 'Exibir tudo' ]
+        ],
+        buttons: [
+            {
+                extend: 'pageLength',
+                text: 'Exibir 25 linhas'
+            },
+            {
+                extend: 'copyHtml5',
+                text: 'Copiar',
+                className: 'btn btn-primary'
+            },
+            {
+                extend: 'csvHtml5',
+                text: 'CSV',
+                title: 'Relatorio Sintético Mensal SAP - ' + periodoString,
+                className: 'btn btn-primary'
+            },
+            {
+                extend: 'pdfHtml5',
+                text: 'PDF',
+                title: 'Relatorio Sintético Mensal SAP - ' + periodoString,
+                className: 'btn btn-primary',
+                orientation: 'landscape',
+                pageSize: 'A4',
+                footer: true,
+                exportOptions: {
+                  columns: ':visible',
+                  search: 'applied',
+                  order: 'applied'
+                },
+                customize: function(doc){
+
+                  doc.content[1].table.widths = ['25%', '15%', '15%', '15%', '15%', '15%']
+                  doc.content.splice(0,1);
+
+                  logoMarron
+
+                  doc.pageMargins = [20,60,20,30];
+                  doc.defaultStyle.fontSize = 10;
+                  doc.styles.tableHeader.fontSize = 10;
+
+                  doc['header'] = (function() {
+                    return {
+                      columns: [
+                        {
+                          alignment: 'left',
+                          image: logoMarron,
+                          width: 200,
+                        },
+                        {
+                          alignment: 'right',
+                          text: 'Relatorio Sintético Mensal SAP - ' + periodoString,
+                          fontsize: 14,
+                          margin: [20,5]
+                        },
+                      ],
+                      margin: 20
+                    }
+                  });
+
+                  doc['footer'] = (function(page, pages) {
+                    return {
+                      columns: [
+                        {
+                          alignment: 'left',
+                          text: ['Pagina ', { text: page.toString() },	' de ',	{ text: pages.toString() }]
+                        },
+                        {
+                          alignment: 'center',
+                          text: ['Relatório gerado através do Sistema GLPI']
+                        },
+                        {
+                          alignment: 'right',
+                          text: [jsDate.toString()]
+                        }
+                      ],
+                      margin: [20,0,20,0]
+                    }
+                  });
+
+                  var objLayout = {};
+                  objLayout['hLineWidth'] = function(i) { return .5; };
+                  objLayout['vLineWidth'] = function(i) { return .5; };
+                  objLayout['hLineColor'] = function(i) { return '#aaa'; };
+                  objLayout['vLineColor'] = function(i) { return '#aaa'; };
+                  objLayout['paddingLeft'] = function(i) { return 4; };
+                  objLayout['paddingRight'] = function(i) { return 4; };
+                  doc.content[0].layout = objLayout;
+
+                }
+            },
+        ],
+        aoColumns: [
+          {
+            sTitle: 'Categoria',
+            mData: 'Categoria'
+          },
+          {
+            sTitle: 'Aberto',
+            mData: 'Aberto'
+          },
+          {
+            sTitle: 'Processando',
+            mData: 'Processando'
+          },
+          {
+            sTitle: 'Pendente',
+            mData: 'Pendente'
+          },
+          {
+            sTitle: 'Fechado',
+            mData: 'Fechado'
+          },
+          {
+            sTitle: 'Total',
+            mData: 'Total'
+          }
+        ],
+        language: {
+            "sProcessing":   "Carregando..."
+        },
+        aaSorting: [[ 5, "desc" ]],
+        footerCallback: function ( row, data, start, end, display ) {
+          var api = this.api()
+
+          var intVal = function ( i ) {
+            return typeof i === 'string' ?
+            i.replace(/[\$,]/g, '')*1 :
+            typeof i === 'number' ?
+            i : 0;
+          };
+
+          var aberto = api
+            .column(1)
+            .data()
+            .reduce( function (a, b) {
+              return intVal(a) + intVal(b)
+          }, 0)
+
+          var processando = api
+            .column(2)
+            .data()
+            .reduce( function (a, b) {
+              return intVal(a) + intVal(b)
+          }, 0)
+
+          var pendente = api
+            .column(3)
+            .data()
+            .reduce( function (a, b) {
+              return intVal(a) + intVal(b)
+          }, 0)
+
+          var fechado = api
+            .column(4)
+            .data()
+            .reduce( function (a, b) {
+              return intVal(a) + intVal(b)
+          }, 0)
+
+          var total = api
+            .column(5)
+            .data()
+            .reduce( function (a, b) {
+              return intVal(a) + intVal(b)
+          }, 0)
+
+          $(api.column(0).footer()).html('<b>Total</b>');
+          $(api.column(1).footer()).html('<b>' + aberto + '</b>');
+          $(api.column(2).footer()).html('<b>' + processando + '</b>');
+          $(api.column(3).footer()).html('<b>' + pendente + '</b>');
+          $(api.column(4).footer()).html('<b>' + fechado + '</b>');
+          $(api.column(5).footer()).html('<b>' + total + '</b>');
+
+        }
+    });
+  
+  }
+}
+
 
 // Gerar Relatório de Equipamentos em Manutenção
 function gerarRel() {

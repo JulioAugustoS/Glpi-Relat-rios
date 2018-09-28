@@ -1,7 +1,6 @@
 <?php
 
 include('../../../../../inc/includes.php');
-include('../../../../../config/config.php');
 include('../../includes/config.php');
 include('../../api/functions.php');
 
@@ -21,6 +20,8 @@ endif;
 
 if($categoria == 9):
   $queryCategoria = 'itilcategories_id IN (9, 42)';
+elseif($categoria == 50):
+  $queryCategoria = 'itilcategories_id IN (39, 32, 33, 38, 30, 29, 28, 31, 25, 24, 26)';
 else:
   $queryCategoria = 'itilcategories_id = '.$categoria.'';
 endif;
@@ -34,7 +35,6 @@ $sqlChamados = "SELECT
                   date                AS Aberto
                 FROM glpi_tickets
                 WHERE is_deleted = 0
-                  AND entities_id = '$empresa'
                   AND ".$queryStatus."
                   AND ".$queryCategoria."
                   AND id != '13637'

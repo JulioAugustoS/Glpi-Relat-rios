@@ -40,8 +40,25 @@ include('../api/functions.php');
 					  	<div class="form-group col-xs-6 col-md-2 padd-padrao" style="margin-left:22%;">
 						    <label class="fleft">Ano</label>
 							<select name="ano" class="form-control" id="ano">
-								<option value="2018">2018</option>
-								<option value="2017">2017</option>
+                                                            <?php 
+                                                            $year = date("Y"); 
+                                                            if ($year == 2018) 
+                                                            {
+                                                                $cont = 2;                                                                
+                                                            }
+                                                            else
+                                                            {
+                                                                $cont = $year - 2017;
+                                                            }
+                                                            
+                                                            while ($cont > 0){ 
+                                                            ?>
+                                                                <option value="<?=$year?>"> <?=$year?> </option>								
+                                                            <?php                                                             
+                                                                $year--;
+                                                                $cont--;
+                                                            }; 
+                                                            ?>
 							</select>
 					  	</div>
 					  	<div class="form-group col-xs-6 col-md-3 padd-padrao">

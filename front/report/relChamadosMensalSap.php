@@ -26,62 +26,40 @@ include('../api/functions.php');
 	?>
 	<div id="container" style="margin-bottom: 40px;">
 		<div class="topo_page">
-			<h3 class="text-center">Relatório Sintético de Chamados - SAP</h3>
+			<h3 class="text-center">Relatório Sintético Mensal SAP</h3>
 			<ol class="breadcrumb">
 			  	<li><a href="<?= $urlGLPI; ?>">GLPI</a></li>
 			  	<li><a href="<?= $urlPlugin; ?>front/index.php">Relatórios</a></li>
-			  	<li class="active">Relatório Sintético de Chamados - SAP</li>
+			  	<li class="active">Relatório Sintético Mensal SAP</li>
 			</ol>
 		</div>
-		<form name="chamadoSapSintetico" action="" method="GET" class="text-center">
+        <form name="chamadoSapSintetico" action="" method="GET" class="text-center">
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-xs-12">
 						<div class="form-group col-xs-6 col-md-2 padd-padrao" style="margin-left:25%;">
-							<label>Status</label>
-							<select class="form-control" name="status" id="status">
-								<option value="todos">Todos</option>
-								<option value="2">Processando</option>
-								<option value="10">Processando e Pendentes</option>
-								<option value="4">Pendente</option>
-								<option value="6">Fechado</option>
-							</select>
+							<label>Data Inicial</label>
+							<input type="date" class="form-control" name="dataInicial" id="dataInicial">
 						</div>
 						<div class="form-group col-xs-6 col-md-2 padd-padrao">
-							<label>Ano</label>
-							<select class="form-control" name="ano" id="ano">
-								<?php 
-								$year = date("Y"); 
-								if ($year == 2018) {
-									$cont = 2;                                                                
-								}
-								else{
-									$cont = $year - 2017;
-								}
-
-								while ($cont > 0){ 
-								?>
-									<option value="<?=$year?>"> <?=$year?> </option>								
-								<?php                                                             
-									$year--;
-									$cont--;
-								}; 
-								?>
-							</select>
+							<label>Data Final</label>
+							<input type="date" class="form-control" name="dataFinal" id="dataFinal">
 						</div>
 						<div class="form-group col-xs-6 col-md-2">
 					  		<label style="color: #FFF;">.</label>
-							<button type="button" class="btn btn-success col-md-12" onclick="gerarRelChamadosSapAnual()">Gerar Relatório</button>
-					  </div>
+							<button type="button" class="btn btn-success col-md-12" onclick="gerarRelChamadosSapStatus()">Gerar Relatório</button>
+					    </div>
+                        
 					</div>
 				</div>
+                <div id="alert"></div>
 			</div>
-    	</form>
+        </form>
 		<hr>
 		<div class="table-responsive">
-			<table id="tabelaChamadosSapAnual" class="display table table-striped table-bordered" style="width:100%"></table>
+			<table id="tabelaChamadosSapStatus" class="display table table-striped table-bordered" style="width:100%"></table>
 		</div>
-  	</div>
-	<?php endif; ?>
+    </div>
+    <?php endif; ?>
 </body>
 </html>

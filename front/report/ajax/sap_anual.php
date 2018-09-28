@@ -1,7 +1,6 @@
 <?php
 
 include('../../../../../inc/includes.php');
-include('../../../../../config/config.php');
 include('../../includes/config.php');
 include('../../api/functions.php');
 
@@ -11,11 +10,12 @@ $ano = $_GET['ano'];
 $status = $_GET['status'];
 
 if($status == 'todos'):
-  $queryStatus = 'glpi_tickets.status IN(1, 2, 3, 4, 5, 6)';
+  $queryStatus = 'status IN (1, 2, 3, 4, 5, 6)';
+elseif($status == 10):
+  $queryStatus = 'status IN(2, 3, 4)';
 else:
-  $queryStatus = 'glpi_tickets.status = '.$status.'';
-endif;
-
+  $queryStatus = 'status = '.$status.'';
+endif; 
 
 $dataIncial = $ano . "-01-01";
 $dataFinal = $ano . "-12-31";
@@ -28,31 +28,56 @@ $dataFinal = $ano . "-12-31";
               ";
   $result_categories = $DB->query($categories) or die('Erro ao buscar as categorias');
 
-  while ($list_categories = $DB->fetch_assoc($result_categories)):
-
-    $chamados = "SELECT
-                    COUNT(glpi_tickets.id) AS total,
-                    AVG(glpi_tickets.close_delay_stat) AS avgtime,
-                    SUM(CASE WHEN (MONTH(date) = 1) THEN 1 ELSE 0 END) QtdJan,
-    								SUM(CASE WHEN (MONTH(date) = 2) THEN 1 ELSE 0 END) QtdFev,
-    								SUM(CASE WHEN (MONTH(date) = 3) THEN 1 ELSE 0 END) QtdMar,
-    								SUM(CASE WHEN (MONTH(date) = 4) THEN 1 ELSE 0 END) QtdAbr,
-    								SUM(CASE WHEN (MONTH(date) = 5) THEN 1 ELSE 0 END) QtdMai,
-    								SUM(CASE WHEN (MONTH(date) = 6) THEN 1 ELSE 0 END) QtdJun,
-    								SUM(CASE WHEN (MONTH(date) = 7) THEN 1 ELSE 0 END) QtdJul,
-    								SUM(CASE WHEN (MONTH(date) = 8) THEN 1 ELSE 0 END) QtdAgo,
-    								SUM(CASE WHEN (MONTH(date) = 9) THEN 1 ELSE 0 END) QtdSet,
-    								SUM(CASE WHEN (MONTH(date) = 10) THEN 1 ELSE 0 END) QtdOut,
-    								SUM(CASE WHEN (MONTH(date) = 11) THEN 1 ELSE 0 END) QtdNov,
-    								SUM(CASE WHEN (MONTH(date) = 12) THEN 1 ELSE 0 END) QtdDez
-                  FROM glpi_tickets
-                  WHERE glpi_tickets.date BETWEEN '$dataIncial' AND '$dataFinal'
-                    AND glpi_tickets.is_deleted = 0
-                    AND glpi_tickets.itilcategories_id = ".$list_categories['ID']."
-                    AND ".$queryStatus."
-                ";
-    $resultChamados = $DB->query($chamados) or die('Erro ao buscar os chamados');
-    $listChamados = $DB->fetch_assoc($resultChamados);
+  while($list_categories = $DB->fetch_assoc($result_categories)):
+    if($status != 6):
+      $chamados = "SELECT
+                      COUNT(id) AS total,
+                      AVG(close_delay_stat) AS avgtime,
+                      SUM(CASE WHEN (MONTH(date) = 1) THEN 1 ELSE 0 END) QtdJan,
+                      SUM(CASE WHEN (MONTH(date) = 2) THEN 1 ELSE 0 END) QtdFev,
+                      SUM(CASE WHEN (MONTH(date) = 3) THEN 1 ELSE 0 END) QtdMar,
+                      SUM(CASE WHEN (MONTH(date) = 4) THEN 1 ELSE 0 END) QtdAbr,
+                      SUM(CASE WHEN (MONTH(date) = 5) THEN 1 ELSE 0 END) QtdMai,
+                      SUM(CASE WHEN (MONTH(date) = 6) THEN 1 ELSE 0 END) QtdJun,
+                      SUM(CASE WHEN (MONTH(date) = 7) THEN 1 ELSE 0 END) QtdJul,
+                      SUM(CASE WHEN (MONTH(date) = 8) THEN 1 ELSE 0 END) QtdAgo,
+                      SUM(CASE WHEN (MONTH(date) = 9) THEN 1 ELSE 0 END) QtdSet,
+                      SUM(CASE WHEN (MONTH(date) = 10) THEN 1 ELSE 0 END) QtdOut,
+                      SUM(CASE WHEN (MONTH(date) = 11) THEN 1 ELSE 0 END) QtdNov,
+                      SUM(CASE WHEN (MONTH(date) = 12) THEN 1 ELSE 0 END) QtdDez
+                    FROM glpi_tickets
+                    WHERE date BETWEEN '$dataIncial' AND '$dataFinal'
+                      AND is_deleted = 0
+                      AND ".$queryStatus."
+                      AND itilcategories_id = ". $list_categories['ID'] ."
+                  ";
+      $resultChamados = $DB->query($chamados) or die('Erro ao buscar os chamados');
+      $listChamados = $DB->fetch_assoc($resultChamados);
+    else:
+      $chamados = "SELECT
+                      COUNT(id) AS total,
+                      AVG(close_delay_stat) AS avgtime,
+                      SUM(CASE WHEN (MONTH(closedate) = 1) THEN 1 ELSE 0 END) QtdJan,
+                      SUM(CASE WHEN (MONTH(closedate) = 2) THEN 1 ELSE 0 END) QtdFev,
+                      SUM(CASE WHEN (MONTH(closedate) = 3) THEN 1 ELSE 0 END) QtdMar,
+                      SUM(CASE WHEN (MONTH(closedate) = 4) THEN 1 ELSE 0 END) QtdAbr,
+                      SUM(CASE WHEN (MONTH(closedate) = 5) THEN 1 ELSE 0 END) QtdMai,
+                      SUM(CASE WHEN (MONTH(closedate) = 6) THEN 1 ELSE 0 END) QtdJun,
+                      SUM(CASE WHEN (MONTH(closedate) = 7) THEN 1 ELSE 0 END) QtdJul,
+                      SUM(CASE WHEN (MONTH(closedate) = 8) THEN 1 ELSE 0 END) QtdAgo,
+                      SUM(CASE WHEN (MONTH(closedate) = 9) THEN 1 ELSE 0 END) QtdSet,
+                      SUM(CASE WHEN (MONTH(closedate) = 10) THEN 1 ELSE 0 END) QtdOut,
+                      SUM(CASE WHEN (MONTH(closedate) = 11) THEN 1 ELSE 0 END) QtdNov,
+                      SUM(CASE WHEN (MONTH(closedate) = 12) THEN 1 ELSE 0 END) QtdDez
+                    FROM glpi_tickets
+                    WHERE date BETWEEN '$dataIncial' AND '$dataFinal'
+                      AND is_deleted = 0
+                      AND ".$queryStatus."
+                      AND itilcategories_id = ". $list_categories['ID'] ."
+                  ";
+      $resultChamados = $DB->query($chamados) or die('Erro ao buscar os chamados');
+      $listChamados = $DB->fetch_assoc($resultChamados);
+    endif;
 
     if($listChamados['QtdJan'] < 1): $jan = ''; else: $jan = $listChamados['QtdJan']; endif;
     if($listChamados['QtdFev'] < 1): $fev = ''; else: $fev = $listChamados['QtdFev']; endif;
